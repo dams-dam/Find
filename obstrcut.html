@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find - Connexion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Manrope:700|Manrope:400|Raleway:400,700" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Manrope:700|Manrope:400|Raleway:400,700');
+        :root {
+            --text: hsl(0, 0%, 99%);
+            --textDim: hsl(0, 0%, 60%);
+            --background: hsl(0, 0%, 7%);
+            --primary: hsl(155, 100%, 65%);
+            --primaryBg: hsla(155, 100%, 65%, 10%);
+            --primaryHi: hsla(155, 100%, 75%, 25%);
+            --primaryFg: hsl(155, 100%, 85%);
+            --secondary: hsl(156, 51%, 14%);
+            --secondaryFg: hsl(156, 51%, 75%);
+            --secondaryBg: hsla(156, 51%, 14%, 5%);
+            --secondaryHi: hsla(156, 51%, 30%, 50%);
+            --accent: hsl(155, 100%, 94%);
+            --accentBg: hsla(155, 100%, 94%, 1%);
+            --accentHi: hsla(155, 100%, 100%, 25%);
+            --error: hsl(0, 100%, 50%);
+        }
+        body {
+            font-family: 'Manrope', 'Raleway', sans-serif;
+            font-weight: 400;
+            background-color: var(--background);
+            color: var(--text);
+            padding: 0 10%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            background-image: url('/mnt/data/image.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        .warning {
+            color: var(--error);
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            animation: blink 2s infinite, glow 1.5s infinite;
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.8);
+        }
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 5px rgba(255, 0, 0, 0.8), 0 0 10px rgba(255, 0, 0, 0.6), 0 0 15px rgba(255, 0, 0, 0.4); }
+            50% { text-shadow: 0 0 10px rgba(255, 0, 0, 1), 0 0 20px rgba(255, 0, 0, 0.8), 0 0 30px rgba(255, 0, 0, 0.6); }
+        }
+        .grid {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-self: center;
+            z-index: -1;
+        }
+        .grid-svg {
+            height: 80%;
+            width: 80%;
+            position: relative;
+            z-index: 1;
+        }
+        .blur {
+            height: 12rem;
+            width: 12rem;
+            background-color: var(--primary);
+            filter: blur(100px);
+            border-radius: 100px;
+            z-index: 0;
+            position: absolute;
+        }
+        .title {
+            position: absolute;
+            z-index: 1;
+            color: var(--primary);
+            font-size: 3rem;
+            right: 0;
+            text-align: right;
+            margin-right: 50px;
+            animation: typeEffect 4s steps(40, end) forwards;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 3px solid var(--primary);
+        }
+        @keyframes typeEffect {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: var(--secondaryBg);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            margin-top: 15%;
+            position: relative;
+            z-index: 10;
+        }
+        .login-form__field {
+            padding: 10px 0px;
+            position: relative;
+        }
+        .login-form__icon {
+            position:absolute;
+            top:12px;
+            left:10px;
+            color:var(--primaryFg);
+        }
+        .login-form__input {
+            border:none;
+            border-bottom:2px solid var(--primaryFg);
+            background:none;
+            padding:10px;
+            padding-left:30px;
+            font-weight:700;
+            width:100%;
+            transition:.2s;
+            color:var(--primaryFg);
+        }
+        .login-form__input:active,
+        .login-form__input:focus,
+        .login-form__input:hover {
+            outline:none;
+            border-bottom-color:var(--primaryHi);
+            box-shadow:0 0 5px var(--primaryHi);
+        }
+        .login-form__input::placeholder {
+            color:var(--textDim);
+        }
+        .login-form__submit {
+            background:var(--primaryBg);
+            font-size:14px;
+            margin-top:30px;
+            padding:16px 20px;
+            border-radius:26px;
+            border:1px solid var(--primaryHi);
+            text-transform:uppercase;
+            font-weight:700;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            width:100%;
+            color:var(--primaryFg);
+            box-shadow:0px 2px 2px var(--secondary);
+            cursor:pointer;
+            transition:.2s;
+        }
+        .login-form__submit:active,
+        .login-form__submit:focus,
+        .login-form__submit:hover {
+            border-color:var(--primaryHi);
+            outline:none;
+        }
+        .button__icon {
+            font-size:24px;
+            margin-left:10px;
+            color:var(--primaryFg);
+        }
+    </style>
+</head>
+<body>
+    <div class="grid">
+        <svg class="grid-svg" xmlns="http://www.w3.org/2000/svg" width="982" height="786" viewBox="0 0 982 786" fill="none">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M490 401V537H348.5V401H490ZM490 785.5V676H348.5V785.5H347.5V676H206V785.5H205V676H63.5V785.5H62.5V676H0V675H62.5V538H0V537H62.5V401H0V400H62.5V258H0V257H62.5V116H0V115H62.5V0H63.5V115L205 115V0H206V115L347.5 115V0H348.5V115H490V0H491V115L627.5 115V0H628.5V115H765V0H766V115L902.5 115V0H903.5V115H982V116H903.5V257H982V258H903.5V400H982V401H903.5V537H982V538H903.5V675H982V676H903.5V785.5H902.5V676H766V785.5H765V676H628.5V785.5H627.5V676H491V785.5H490ZM902.5 675V538H766V675H902.5ZM902.5 537V401H766V537H902.5ZM902.5 400V258H766V400H902.5ZM902.5 257V116L766 116V257H902.5ZM627.5 675H491V538H627.5V675ZM765 675H628.5V538H765V675ZM348.5 675H490V538H348.5V675ZM347.5 538V675H206V538H347.5ZM205 538V675H63.5V538H205ZM765 537V401H628.5V537H765ZM765 400V258H628.5V400H765ZM765 257V116H628.5V257H765ZM347.5 401V537H206V401H347.5ZM205 401V537H63.5V401H205ZM627.5 401V537H491V401H627.5ZM627.5 116L491 116V257H627.5V116ZM627.5 258H491V400H627.5V258ZM63.5 257V116L205 116V257H63.5ZM63.5 400V258H205V400H63.5ZM206 116V257H347.5V116L206 116ZM348.5 116V257H490V116H348.5ZM206 400V258H347.5V400H206ZM348.5 258V400H490V258H348.5Z" fill="url(#paint0_radial_1_8)"></path>
+        </svg>
+        <div class="blur"></div>
+    </div>
+    <div class="title">Find Innovative Solutions</div>
+    <div class="login-container">
+        <div class="warning" id="error-message"></div>
+        <h2>Connexion</h2>
+        <form class="login-form" id="loginForm">
+            <div class="login-form__field">
+                <i class="fas fa-user login-form__icon"></i>
+                <input type="text" id="username" class="login-form__input" placeholder="Nom d'utilisateur" required>
+            </div>
+            <div class="login-form__field">
+                <i class="fas fa-lock login-form__icon"></i>
+                <input type="password" id="password" class="login-form__input" placeholder="Mot de passe" required>
+            </div>
+            <button type="button" class="login-form__submit" id="loginButton">
+                <i class="fas fa-chevron-right button__icon"></i> Se connecter
+            </button>
+        </form>
+    </div>
+
+    <script>
+                // Désactiver le clic droit
+                document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Désactiver les raccourcis clavier
+        document.addEventListener('keydown', function(e) {
+            // Désactiver Ctrl+Shift+I, Ctrl+Shift+C et F12
+            if ((e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) ||
+                (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) ||
+                (e.key === 'F12')) {
+                e.preventDefault();
+            }
+        });
+        document.getElementById('loginButton').addEventListener('click', function() {
+            var username = document.getElementById('username').value.trim();
+            var password = document.getElementById('password').value.trim();
+
+            // Vérification sommaire des identifiants
+            if (username === 'utilisateur' && password === 'mdp') {
+                // Redirection vers la page de test si les identifiants sont corrects
+                window.location.href = 'intranet.html';
+            } else {
+                // Affichage du message d'erreur
+                document.getElementById('error-message').innerText = "Nom d'utilisateur ou mot de passe incorrect.";
+            }
+        });
+    </script>
+</body>
+</html>
