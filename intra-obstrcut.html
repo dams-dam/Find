@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Intranet</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Manrope:700|Manrope:400|Raleway:400,700" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Manrope:700|Manrope:400|Raleway:400,700');
+        :root {
+            --text: hsl(0, 0%, 99%);
+            --textDim: hsl(0, 0%, 60%);
+            --background: hsl(0, 0%, 10%);
+            --primary: hsl(155, 100%, 65%);
+            --primaryBg: hsla(155, 100%, 65%, 10%);
+            --primaryHi: hsla(155, 100%, 75%, 25%);
+            --primaryFg: hsl(155, 100%, 85%);
+            --secondary: hsl(156, 51%, 14%);
+            --secondaryFg: hsl(156, 51%, 75%);
+            --secondaryBg: hsla(156, 51%, 14%, 5%);
+            --secondaryHi: hsla(156, 51%, 30%, 50%);
+            --accent: hsl(155, 100%, 94%);
+            --accentBg: hsla(155, 100%, 94%, 1%);
+            --accentHi: hsla(155, 100%, 100%, 25%);
+            --error: hsl(0, 100%, 50%);
+        }
+        body {
+            font-family: 'Manrope', 'Raleway', sans-serif;
+            font-weight: 400;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+        }
+        .navbar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: var(--secondaryBg);
+            border-bottom: 1px solid var(--primaryFg);
+            position: fixed;
+            top: 0;
+            z-index: 10;
+        }
+        .navbar h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        .navbar .user-info {
+            display: flex;
+            align-items: center;
+            color: var(--textDim);
+        }
+        .navbar .user-info i {
+            margin-right: 0.5rem;
+        }
+        .content {
+            width: 90%;
+            max-width: 1200px;
+            margin-top: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .card {
+            background: var(--secondaryBg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            margin-bottom: 2rem;
+            width: 100%;
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card h2 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+        .map-container {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%;
+            background: url('chart.jpg') no-repeat center center;
+            background-size: cover;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        .map-legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 0.9rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .map-legend h3 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+        .map-legend ul {
+            list-style: none;
+            padding: 0;
+        }
+        .map-legend li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .map-legend span {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            margin-right: 10px;
+        }
+        .legend-red { background-color: #ff0000; }
+        .legend-orange { background-color: #ff9900; }
+        .legend-yellow { background-color: #ffff00; }
+        .legend-green { background-color: #00ff00; }
+        .legend-grey { background-color: #808080; }
+        .statistics {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .stat {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 45%;
+            margin: 10px;
+            transition: background 0.3s, transform 0.3s;
+            flex: 1 1 calc(50% - 20px);
+            max-width: calc(50% - 20px);
+        }
+        .stat:hover {
+            transform: scale(1.05);
+        }
+        .stat.puces { background: var(--primaryBg); color: var(--primary); }
+        .stat.pays { background: var(--secondaryBg); color: var(--secondaryFg); }
+        .stat.influence { background: var(--accentBg); color: var(--accent); }
+        .stat.projets { background: var(--primaryHi); color: var(--primaryFg); }
+        .stat.partenariats { background: var(--secondaryHi); color: var(--secondaryFg); }
+        .stat h3 {
+            margin: 10px 0;
+        }
+        .stat p {
+            margin: 0;
+        }
+        .info-text {
+            font-size: 0.9rem;
+            color: var(--textDim);
+            margin-top: 20px;
+        }
+        .button {
+            background: var(--primary);
+            color: var(--background);
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: background 0.3s;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .button:hover {
+            background: var(--primaryHi);
+        }
+        .accordion {
+            background: var(--secondaryBg);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            margin-bottom: 2rem;
+            width: 100%;
+        }
+        .accordion-item {
+            border-top: 1px solid var(--primaryFg);
+        }
+        .accordion-item:first-child {
+            border-top: none;
+        }
+        .accordion-header {
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .accordion-body {
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: var(--textDim);
+            display: none;
+        }
+        .accordion-item.active .accordion-body {
+            display: block;
+        }
+        .mailbox {
+            background: var(--secondaryBg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 400px;
+            transition: transform 0.3s;
+            position: fixed;
+            right: 20px;
+            top: 100px;
+            z-index: 10;
+            display: none;
+            overflow-y: auto;
+            max-height: calc(100vh - 150px);
+        }
+        .mailbox.active {
+            display: block;
+        }
+        .mailbox h2 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+        .mail-item {
+            border-bottom: 1px solid var(--primaryFg);
+            padding: 10px 0;
+            cursor: pointer;
+        }
+        .mail-item:last-child {
+            border-bottom: none;
+        }
+        .mail-item:hover {
+            background: var(--primaryBg);
+        }
+        .mail-item.active .mail-body {
+            display: block;
+        }
+        .mail-body {
+            display: none;
+            padding: 10px 0;
+            color: var(--textDim);
+        }
+        .mail-icon {
+            position: fixed;
+            right: 20px;
+            top: 60px;
+            font-size: 2rem;
+            color: var(--primary);
+            cursor: pointer;
+            z-index: 20;
+        }
+        .employee-recognition, .project-board {
+            background: var(--secondaryBg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            margin-bottom: 2rem;
+            width: 100%;
+            transition: transform 0.3s;
+        }
+        .employee-recognition:hover, .project-board:hover {
+            transform: translateY(-5px);
+        }
+        .employee-recognition h2, .project-board h2 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+        .employee-list, .project-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .employee-list li, .project-list li {
+            background: var(--primaryBg);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            color: var(--primary);
+        }
+        .calendar-container {
+            width: 100%;
+            height: 400px;
+            background: var(--primaryBg);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            margin-top: 20px;
+        }
+        @media (max-width: 768px) {
+            .statistics {
+                flex-direction: column;
+                align-items: center;
+            }
+            .stat {
+                width: 80%;
+                max-width: 100%;
+            }
+        }
+
+        
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <h1>Find Intranet</h1>
+        <div class="user-info">
+            <i class="fas fa-user-circle"></i>
+            <span>Admin</span>
+        </div>
+    </header>
+    <i class="fas fa-envelope mail-icon"></i>
+    <div class="content">
+        <div class="card">
+            <h2>Carte Globale</h2>
+            <div class="map-container">
+                <div class="map-legend">
+                    <h3>Légende</h3>
+                    <ul>
+                        <li><span class="legend-red"></span>Contrôle total de Find</li>
+                        <li><span class="legend-orange"></span>Présence émergente de Find</li>
+                        <li><span class="legend-yellow"></span>Influence significative de Find</li>
+                        <li><span class="legend-green"></span>Présence limitée de Find</li>
+                        <li><span class="legend-grey"></span>Aucune présence de Find</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h2>Statistiques</h2>
+            <div class="statistics">
+                <div class="stat puces">
+                    <h3>Puces</h3>
+                    <p>10M+</p>
+                </div>
+                <div class="stat pays">
+                    <h3>Pays</h3>
+                    <p>50+</p>
+                </div>
+                <div class="stat influence">
+                    <h3>Influence</h3>
+                    <p>Global</p>
+                </div>
+                <div class="stat projets">
+                    <h3>Projets</h3>
+                    <p>200+</p>
+                </div>
+                <div class="stat partenariats">
+                    <h3>Partenariats</h3>
+                    <p>100+</p>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h2>À Propos de Find</h2>
+            <p class="info-text">
+                Find est un leader mondial dans les solutions technologiques innovantes. Notre technologie de puce de pointe est adoptée par des millions de personnes dans le monde, permettant une connectivité et une sécurité sans faille. Avec une présence dans plus de 50 pays, l'influence de Find s'étend sur plusieurs secteurs, stimulant le progrès et l'innovation dans chaque coin du globe.
+            </p>
+            <p class="info-text">
+                Nous nous engageons à fournir des solutions de haute qualité qui transforment les vies et les industries. Grâce à notre expertise et à notre dévouement, nous avons réussi à établir une base solide de clients fidèles et à développer des partenariats stratégiques dans le monde entier.
+            </p>
+            <p class="info-text">
+                Nos domaines d'expertise incluent la sécurité numérique, les solutions de connectivité, et les innovations en matière de santé et de bien-être. Nous collaborons avec des leaders d'industrie pour apporter des solutions sur mesure qui répondent aux défis actuels et futurs.
+            </p>
+            <p class="info-text">
+                La mission de Find est de rendre le monde plus connecté et sécurisé grâce à des technologies de pointe. Nous investissons continuellement dans la recherche et le développement pour rester à l'avant-garde de l'innovation et offrir des produits et services de qualité supérieure à nos clients.
+            </p>
+            <a href="#" class="button">En savoir plus</a>
+        </div>
+        <div class="accordion">
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span>Partenariats Stratégique</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-body">
+                    <p>Find a conclu des partenariats stratégiques avec plusieurs gouvernements et entreprises à travers le monde pour déployer ses technologies de pointe. Ces collaborations visent à améliorer la connectivité, la sécurité et l'efficacité opérationnelle dans divers secteurs.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span>Projets Récents</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-body">
+                    <p>Parmi nos projets récents, nous avons lancé une initiative pour améliorer la sécurité numérique dans les écoles et les universités, et nous avons déployé des solutions de connectivité avancées dans plusieurs grandes villes.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span>Innovations en Santé</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-body">
+                    <p>Find travaille également sur des innovations en matière de santé et de bien-être, notamment des technologies de suivi de la santé qui permettent aux utilisateurs de surveiller leur bien-être en temps réel et d'accéder à des services de santé personnalisés.</p>
+                </div>
+            </div>
+        </div>
+        <div class="employee-recognition">
+            <h2>Tableau de Reconnaissance des Employés</h2>
+            <ul class="employee-list">
+                <li><strong>Employé du Mois :</strong> Sarah Lemoine - Pour ses performances exceptionnelles dans le développement de la nouvelle puce Find.</li>
+                <li><strong>Récompenses et Distinctions :</strong> Équipe R&D - Pour l'innovation en matière de sécurité numérique.</li>
+            </ul>
+        </div>
+        <div class="project-board">
+            <h2>Tableau de Bord de Projets</h2>
+            <ul class="project-list">
+                <li><strong>Projet Alpha :</strong> En cours - Responsable: Jean Dupont - Deadline: 31/12/2024</li>
+                <li><strong>Projet Beta :</strong> Terminé - Responsable: Sophie Lefèvre</li>
+                <li><strong>Projet Gamma :</strong> En attente - Responsable: Pierre Martin - Deadline: 15/01/2025</li>
+            </ul>
+            <div class="calendar-container"></div>
+        </div>
+        <div class="mailbox">
+            <h2>Messagerie Interne</h2>
+            <div class="mail-item">
+                <div class="mail-header">
+                    <strong>Jean Dupont</strong> - Sujet : Nouvelle Puce Find
+                </div>
+                <div class="mail-body">
+                    <p>Bonjour Pierre,</p>
+                    <p>As-tu déjà testé la nouvelle puce Find ? Les fonctionnalités semblent impressionnantes, notamment en ce qui concerne la connectivité et la sécurité.</p>
+                    <p>Meilleures salutations,</p>
+                    <p>Jean</p>
+                </div>
+            </div>
+            <div class="mail-item">
+                <div class="mail-header">
+                    <strong>Pierre Martin</strong> - Sujet : RE: Nouvelle Puce Find
+                </div>
+                <div class="mail-body">
+                    <p>Salut Jean,</p>
+                    <p>Oui, je l'ai installée récemment. Elle améliore vraiment l'efficacité au quotidien. J'ai particulièrement aimé les nouvelles fonctionnalités de sécurité.</p>
+                    <p>A bientôt,</p>
+                    <p>Pierre</p>
+                </div>
+            </div>
+            <div class="mail-item">
+                <div class="mail-header">
+                    <strong>Jean Dupont</strong> - Sujet : RE: Nouvelle Puce Find
+                </div>
+                <div class="mail-body">
+                    <p>Re,</p>
+                    <p>Content de l'entendre. Je pense que cela va révolutionner notre façon de travailler. On se voit à la prochaine réunion pour en discuter.</p>
+                    <p>Jean</p>
+                </div>
+            </div>
+            <div class="mail-item">
+                <div class="mail-header">
+                    <strong>Sophie Lefèvre</strong> - Sujet : Inquiétudes sur la Puce
+                </div>
+                <div class="mail-body">
+                    <p>Bonjour tout le monde,</p>
+                    <p>J'ai entendu des rumeurs inquiétantes concernant la collecte de données par la puce. Est-ce que quelqu'un peut confirmer si c'est vrai ?</p>
+                    <p>Cordialement,</p>
+                    <p>Sophie</p>
+                </div>
+            </div>
+            <div class="mail-item">
+                <div class="mail-header">
+                    <strong>Directeur</strong> - Sujet : Collaboration Obligatoire
+                </div>
+                <div class="mail-body">
+                    <p>À tous les employés,</p>
+                    <p>Je tiens à rappeler que la collaboration avec Find est essentielle. Tout refus de participer ou toute opposition sera sévèrement sanctionné. Merci de votre compréhension.</p>
+                    <p>Le Directeur</p>
+                </div>
+            </div>
+            <div class="mail-item">
+                <div class="mail-header">
+                    <strong>Pierre Martin</strong> - Sujet : RE: Inquiétudes sur la Puce
+                </div>
+                <div class="mail-body">
+                    <p>Sophie,</p>
+                    <p>Je ne peux pas confirmer officiellement, mais j'ai entendu des choses similaires. Soyons prudents et restons vigilants.</p>
+                    <p>Pierre</p>
+                </div>
+            </div>
+            <div class="mail-item">
+                <div class="mail-header">
+                    <strong>Jean Dupont</strong> - Sujet : Blague de la Journée
+                </div>
+                <div class="mail-body">
+                    <p>Pourquoi les programmeurs préfèrent-ils les dark modes ? Parce que les bugs se cachent mieux dans l'obscurité !</p>
+                </div>
+            </div>
+            <div class="mail-item">
+                <div class="mail-header">
+                    <strong>Pierre Martin</strong> - Sujet : Pause Café
+                </div>
+                <div class="mail-body">
+                    <p>Jean,</p>
+                    <p>On se retrouve à la machine à café pour une petite pause ? J'ai besoin de faire une pause après avoir débogué toute la matinée !</p>
+                    <p>Pierre</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.accordion-header').forEach(item => {
+            item.addEventListener('click', () => {
+                const parent = item.parentNode;
+                const body = parent.querySelector('.accordion-body');
+                parent.classList.toggle('active');
+                if (parent.classList.contains('active')) {
+                    body.style.display = 'block';
+                } else {
+                    body.style.display = 'none';
+                }
+            });
+        });
+        
+        document.querySelector('.mail-icon').addEventListener('click', () => {
+            document.querySelector('.mailbox').classList.toggle('active');
+        });
+
+        document.querySelectorAll('.mail-item').forEach(item => {
+            item.addEventListener('click', () => {
+                item.classList.toggle('active');
+                const body = item.querySelector('.mail-body');
+                if (item.classList.contains('active')) {
+                    body.style.display = 'block';
+                } else {
+                    body.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
